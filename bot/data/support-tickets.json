@@ -1,0 +1,65 @@
+{
+  "nextId": 4,
+  "tickets": {
+    "1": {
+      "ticketId": 1,
+      "nome": "macaco",
+      "email": "caco@email.com",
+      "assunto": "teste",
+      "status": "ABERTO",
+      "channelId": null,
+      "channelName": null,
+      "criadoEm": "2026-05-07T14:22:48.005Z",
+      "atualizadoEm": "2026-05-07T14:22:48.005Z",
+      "mensagens": [
+        {
+          "id": 1,
+          "autorTipo": "CLIENTE",
+          "autorNome": "macaco",
+          "mensagem": "a",
+          "criadoEm": "2026-05-07T14:22:48.005Z"
+        }
+      ]
+    },
+    "2": {
+      "ticketId": 2,
+      "nome": "macaco",
+      "email": "caco@email.com",
+      "assunto": "a",
+      "status": "ABERTO",
+      "channelId": null,
+      "channelName": null,
+      "criadoEm": "2026-05-07T14:22:56.848Z",
+      "atualizadoEm": "2026-05-07T14:22:56.848Z",
+      "mensagens": [
+        {
+          "id": 1,
+          "autorTipo": "CLIENTE",
+          "autorNome": "macaco",
+          "mensagem": "a",
+          "criadoEm": "2026-05-07T14:22:56.848Z"
+        }
+      ]
+    },
+    "3": {
+      "ticketId": 3,
+      "nome": "Administrador",
+      "email": "admin@petzilla.com",
+      "assunto": "Suporte PetZilla",
+      "status": "ABERTO",
+      "channelId": null,
+      "channelName": null,
+      "criadoEm": "2026-05-07T14:51:16.625Z",
+      "atualizadoEm": "2026-05-07T14:51:16.625Z",
+      "mensagens": [
+        {
+          "id": 1,
+          "autorTipo": "CLIENTE",
+          "autorNome": "Administrador",
+          "mensagem": "produtos",
+          "criadoEm": "2026-05-07T14:51:16.625Z"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "area": "PRODUTO",
+  "acao": "criou",
+  "alvo": "http://localhost:8080/api/produtos",
+  "actor": {
+    "id": 1,
+    "nome": "Administrador",
+    "usuario": "admin",
+    "perfil": "ADMIN",
+    "cargo": "Administrador"
+  },
+  "detalhes": {
+    "metodo": "POST",
+    "url": "http://localhost:8080/api/produtos",
+    "id": 2,
+    "horario": "2026-05-08T22:12:26.897Z",
+    "enviado": {
+      "nome": "Macaco1",
+      "descricao": "",
+      "preco": 199.99,
+      "precoDesconto": 199.99,
+      "qtdEstoque": 200,
+      "imagem": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWGsBymUCa1KDLDbd0zjdMBVI6hYATL86pNrcCEC5RxAHuDbdDiZ7c807swUKyy_ztic8QAou-lYjs9xeZ5NvF4l7v5qK6VAC-sThQ6Q&s=10",
+      "ativo": true,
+      "categoria": null
+    },
+    "antes": null,
+    "resposta": {
+      "id": 2,
+      "nome": "Macaco1",
+      "descricao": "",
+      "preco": 199.99,
+      "precoDesconto": 199.99,
+      "imagem": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWGsBymUCa1KDLDbd0zjdMBVI6hYATL86pNrcCEC5RxAHuDbdDiZ7c807swUKyy_ztic8QAou-lYjs9xeZ5NvF4l7v5qK6VAC-sThQ6Q&s=10",
+      "qtdEstoque": 200,
+      "ativo": true,
+      "categoria": null
+    },
+    "mudancas": [],
+    "origem": "frontend-admin",
+    "sucesso": true,
+    "statusHttp": 200
+  }
+}

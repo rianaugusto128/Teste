@@ -1,0 +1,92 @@
+[
+  {
+    "id": "1778172333828",
+    "createdAt": "2026-05-07T16:45:33.828Z",
+    "tipo": "SUPORTE",
+    "area": "suporte",
+    "acao": "abriu conversa de suporte",
+    "alvo": "Ticket #1",
+    "actor": {
+      "id": 1,
+      "nome": "Administrador",
+      "usuario": "admin",
+      "perfil": "ADMIN",
+      "cargo": "Administrador"
+    },
+    "detalhes": {
+      "email": "admin@petzilla.com"
+    }
+  },
+  {
+    "id": "1778172336126",
+    "createdAt": "2026-05-07T16:45:36.126Z",
+    "tipo": "SUPORTE",
+    "area": "suporte",
+    "acao": "abriu conversa de suporte",
+    "alvo": "Ticket #1",
+    "actor": {
+      "id": 1,
+      "nome": "Administrador",
+      "usuario": "admin",
+      "perfil": "ADMIN",
+      "cargo": "Administrador"
+    },
+    "detalhes": {
+      "email": "admin@petzilla.com"
+    }
+  },
+  {
+    "id": "1778172976410",
+    "createdAt": "2026-05-07T16:56:16.410Z",
+    "tipo": "SUPORTE",
+    "area": "suporte",
+    "acao": "abriu conversa de suporte",
+    "alvo": "Ticket #1",
+    "actor": {
+      "id": 1,
+      "nome": "Administrador",
+      "usuario": "admin",
+      "perfil": "ADMIN",
+      "cargo": "Administrador"
+    },
+    "detalhes": {
+      "email": "admin@petzilla.com"
+    }
+  },
+  {
+    "id": "1778172982310",
+    "createdAt": "2026-05-07T16:56:22.310Z",
+    "tipo": "SUPORTE",
+    "area": "suporte",
+    "acao": "abriu conversa de suporte",
+    "alvo": "Ticket #1",
+    "actor": {
+      "id": 1,
+      "nome": "Administrador",
+      "usuario": "admin",
+      "perfil": "ADMIN",
+      "cargo": "Administrador"
+    },
+    "detalhes": {
+      "email": "admin@petzilla.com"
+    }
+  },
+  {
+    "id": "1778172985111",
+    "createdAt": "2026-05-07T16:56:25.111Z",
+    "tipo": "SUPORTE",
+    "area": "suporte",
+    "acao": "abriu conversa de suporte",
+    "alvo": "Ticket #1",
+    "actor": {
+      "id": 1,
+      "nome": "Administrador",
+      "usuario": "admin",
+      "perfil": "ADMIN",
+      "cargo": "Administrador"
+    },
+    "detalhes": {
+      "email": "admin@petzilla.com"
+    }
+  }
+]

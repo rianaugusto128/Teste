@@ -1,0 +1,40 @@
+USE petshop;
+
+-- Atualização segura: adiciona somente as colunas que ainda não existem.
+SET @db := DATABASE();
+
+SET @sql := IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='usuario' AND COLUMN_NAME='foto_perfil') = 0,
+    'ALTER TABLE usuario ADD COLUMN foto_perfil LONGTEXT', 'SELECT "foto_perfil já existe"');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql := IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='usuario' AND COLUMN_NAME='telefone') = 0,
+    'ALTER TABLE usuario ADD COLUMN telefone VARCHAR(30)', 'SELECT "telefone já existe"');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql := IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='usuario' AND COLUMN_NAME='cep') = 0,
+    'ALTER TABLE usuario ADD COLUMN cep VARCHAR(20)', 'SELECT "cep já existe"');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql := IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='usuario' AND COLUMN_NAME='endereco') = 0,
+    'ALTER TABLE usuario ADD COLUMN endereco VARCHAR(160)', 'SELECT "endereco já existe"');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql := IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='usuario' AND COLUMN_NAME='numero') = 0,
+    'ALTER TABLE usuario ADD COLUMN numero VARCHAR(20)', 'SELECT "numero já existe"');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql := IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='usuario' AND COLUMN_NAME='complemento') = 0,
+    'ALTER TABLE usuario ADD COLUMN complemento VARCHAR(120)', 'SELECT "complemento já existe"');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql := IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='usuario' AND COLUMN_NAME='bairro') = 0,
+    'ALTER TABLE usuario ADD COLUMN bairro VARCHAR(120)', 'SELECT "bairro já existe"');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql := IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='usuario' AND COLUMN_NAME='cidade') = 0,
+    'ALTER TABLE usuario ADD COLUMN cidade VARCHAR(120)', 'SELECT "cidade já existe"');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql := IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=@db AND TABLE_NAME='usuario' AND COLUMN_NAME='estado') = 0,
+    'ALTER TABLE usuario ADD COLUMN estado VARCHAR(2)', 'SELECT "estado já existe"');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;

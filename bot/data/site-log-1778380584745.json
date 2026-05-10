@@ -1,0 +1,14 @@
+{
+  "area": "SUPORTE",
+  "acao": "Novo ticket criado",
+  "alvo": "Ticket #11",
+  "actor": {
+    "nome": "Rian Augusto Camargo Benedito",
+    "usuario": "rian.augustomc@gmail.com",
+    "cargo": "Cliente"
+  },
+  "detalhes": {
+    "email": "rian.augustomc@gmail.com",
+    "assunto": "Compra ou pagamento"
+  }
+}

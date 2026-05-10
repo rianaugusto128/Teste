@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Conta - PetZilla</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(45, 212, 191, .18), transparent 28rem),
+                radial-gradient(circle at bottom right, rgba(249, 115, 22, .14), transparent 24rem),
+                #f8fafc;
+        }
+    </style>
+    <link rel="stylesheet" href="assets/css/petzilla-support-pro.css">
+</head>
+
+<body class="text-slate-800 min-h-screen">
+    <div id="promoBanner" class="hidden"></div>
+
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-teal-100 shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+                <div class="flex items-center justify-between gap-4">
+                    <a href="index.html" class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 to-orange-400 flex items-center justify-center shadow-lg">
+                            <i class="fas fa-paw text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-black leading-none text-teal-700">PetZilla</h1>
+                            <p class="text-xs font-semibold text-orange-500">Meu espaço PetZilla</p>
+                        </div>
+                    </a>
+                    <div class="flex items-center gap-2 lg:hidden">
+                        <div data-cart-area data-cart-mobile="true"></div>
+                        <div id="userAreaMobile"></div>
+                    </div>
+                </div>
+
+                <div class="flex-1"></div>
+
+                <div class="hidden lg:flex items-center gap-3">
+                    <a href="index.html" class="font-bold text-slate-700 hover:text-teal-700">Início</a>
+                    <a href="produtos.html" class="font-bold text-slate-700 hover:text-teal-700">Produtos</a>
+                    <div data-cart-area></div>
+                    <div id="userAreaDesktop"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-10">
+        <div class="max-w-6xl mx-auto grid lg:grid-cols-[320px_1fr] gap-6">
+            <aside class="bg-white border border-teal-50 rounded-[2rem] p-8 shadow-sm h-fit">
+                <div class="flex flex-col items-center text-center">
+                    <div id="profilePreview" class="mb-5"></div>
+                    <h2 id="welcomeName" class="text-2xl font-black text-slate-900">Usuário</h2>
+                    <p class="text-slate-500 mt-2">Atualize seus dados e deixe sua experiência mais prática no petshop.</p>
+                </div>
+
+                <div class="mt-8 space-y-3">
+                    <label class="block text-sm font-black text-slate-700">Perfil com a sua cara</label>
+                    <input id="fotoPerfilArquivo" type="file" accept="image/*" class="block w-full text-sm text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-teal-600 file:px-4 file:py-2 file:font-bold file:text-white hover:file:bg-teal-700">
+                    <button id="removePhoto" type="button" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-2xl font-bold transition">Remover foto</button>
+                    <p class="text-xs text-slate-500">Use uma foto para personalizar sua conta PetZilla.</p>
+                </div>
+            </aside>
+
+            <section class="bg-white border border-teal-50 rounded-[2rem] p-8 shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                    <div>
+                        <p class="font-black text-orange-500 uppercase text-sm tracking-widest">Perfil</p>
+                        <h1 class="text-3xl font-black text-slate-900">Meu espaço PetZilla</h1>
+                    </div>
+                    <a href="produtos.html" class="inline-flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-full font-black transition">
+                        <i class="fas fa-store mr-2"></i>Voltar para a loja
+                    </a>
+                </div>
+
+                <div id="userStatus" class="hidden mb-6 p-4 rounded-2xl border font-semibold"></div>
+                <div id="adminHint" class="hidden mb-6 p-4 rounded-2xl border bg-amber-50 border-amber-200 text-amber-800 font-semibold">
+                    <i class="fas fa-circle-info mr-2"></i>Você entrou com um login administrativo sem ID persistido. Para editar foto/endereço, utilize uma conta de usuário cadastrada.
+                </div>
+
+                <form id="profileForm" class="space-y-8">
+                    <section>
+                        <h3 class="text-xl font-black text-slate-900 mb-4"><i class="fas fa-user text-teal-600 mr-2"></i>Informações do tutor</h3>
+                        <div class="grid md:grid-cols-2 gap-5">
+                            <div class="md:col-span-2">
+                                <label for="nome" class="block text-sm font-black text-slate-700 mb-2">Nome</label>
+                                <input id="nome" type="text" class="w-full px-4 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-teal-400 focus:ring-4 focus:ring-teal-100 outline-none">
+                            </div>
+
+                            <div>
+                                <label for="usuario" class="block text-sm font-black text-slate-700 mb-2">Usuário</label>
+                                <input id="usuario" type="text" disabled class="w-full px-4 py-4 rounded-2xl bg-slate-100 border border-slate-200 text-slate-500 outline-none cursor-not-allowed">
+                            </div>
+
+                            <div>
+                                <label for="email" class="block text-sm font-black text-slate-700 mb-2">E-mail</label>
+                                <input id="email" type="email" class="w-full px-4 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-orange-400 focus:ring-4 focus:ring-orange-100 outline-none">
+                            </div>
+
+                            <div>
+                                <label for="telefone" class="block text-sm font-black text-slate-700 mb-2">Telefone / WhatsApp</label>
+                                <input id="telefone" type="text" placeholder="Ex: (88) 98888-9999" class="w-full px-4 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-teal-400 focus:ring-4 focus:ring-teal-100 outline-none">
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-4">
+                            <div>
+                                <h3 class="text-xl font-black text-slate-900"><i class="fas fa-location-dot text-orange-500 mr-2"></i>Endereço</h3>
+                                <p class="text-sm text-slate-500 mt-1">Informe seu endereço para facilitar contato, entrega e organização dos pedidos.</p>
+                            </div>
+                            <button id="buscarCep" type="button" class="bg-teal-50 text-teal-700 hover:bg-teal-100 px-4 py-3 rounded-2xl font-black transition w-fit">
+                                <i class="fas fa-magnifying-glass-location mr-2"></i>Buscar CEP
+                            </button>
+                        </div>
+
+                        <div class="grid md:grid-cols-4 gap-5">
+                            <div>
+                                <label for="cep" class="block text-sm font-black text-slate-700 mb-2">CEP</label>
+                                <input id="cep" type="text" placeholder="00000-000" class="w-full px-4 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-teal-400 focus:ring-4 focus:ring-teal-100 outline-none">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="endereco" class="block text-sm font-black text-slate-700 mb-2">Rua / Endereço</label>
+                                <input id="endereco" type="text" placeholder="Rua, avenida..." class="w-full px-4 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-teal-400 focus:ring-4 focus:ring-teal-100 outline-none">
+                            </div>
+                            <div>
+                                <label for="numero" class="block text-sm font-black text-slate-700 mb-2">Número</label>
+                                <input id="numero" type="text" placeholder="Nº" class="w-full px-4 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-teal-400 focus:ring-4 focus:ring-teal-100 outline-none">
+                            </div>
+                            <div>
+                                <label for="bairro" class="block text-sm font-black text-slate-700 mb-2">Bairro</label>
+                                <input id="bairro" type="text" placeholder="Seu bairro" class="w-full px-4 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-teal-400 focus:ring-4 focus:ring-teal-100 outline-none">
+                            </div>
+                            <div>
+                                <label for="cidade" class="block text-sm font-black text-slate-700 mb-2">Cidade</label>
+                                <input id="cidade" type="text" placeholder="Sua cidade" class="w-full px-4 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-teal-400 focus:ring-4 focus:ring-teal-100 outline-none">
+                            </div>
+                            <div>
+                                <label for="estado" class="block text-sm font-black text-slate-700 mb-2">Estado</label>
+                                <input id="estado" type="text" maxlength="2" placeholder="UF" class="uppercase w-full px-4 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-teal-400 focus:ring-4 focus:ring-teal-100 outline-none">
+                            </div>
+                            <div>
+                                <label for="complemento" class="block text-sm font-black text-slate-700 mb-2">Complemento</label>
+                                <input id="complemento" type="text" placeholder="Casa, bloco, referência..." class="w-full px-4 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-teal-400 focus:ring-4 focus:ring-teal-100 outline-none">
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                        <button type="submit" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-4 rounded-2xl font-black transition">
+                            <i class="fas fa-save mr-2"></i>Salvar perfil
+                        </button>
+                        <a href="produtos.html" class="flex-1 text-center bg-slate-100 hover:bg-slate-200 text-slate-700 py-4 rounded-2xl font-black transition">
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+            </section>
+        </div>
+
+        <section class="max-w-6xl mx-auto mt-8 grid md:grid-cols-3 gap-4">
+            <div class="bg-white rounded-3xl border border-teal-50 shadow-sm p-6">
+                <i class="fas fa-location-dot text-3xl text-teal-700 mb-3"></i>
+                <h3 class="font-black text-slate-900">Endereço sempre à mão</h3>
+                <p class="text-sm text-slate-500 mt-2">Deixe CEP, bairro, cidade e número salvos para agilizar atendimento e futuras entregas.</p>
+            </div>
+            <div class="bg-white rounded-3xl border border-orange-50 shadow-sm p-6">
+                <i class="fas fa-camera text-3xl text-orange-500 mb-3"></i>
+                <h3 class="font-black text-slate-900">Perfil com a sua cara</h3>
+                <p class="text-sm text-slate-500 mt-2">Adicione uma imagem para deixar sua conta mais próxima e fácil de identificar.</p>
+            </div>
+            <div class="bg-white rounded-3xl border border-cyan-50 shadow-sm p-6">
+                <i class="fas fa-paw text-3xl text-cyan-600 mb-3"></i>
+                <h3 class="font-black text-slate-900">Seu cantinho PetZilla</h3>
+                <p class="text-sm text-slate-500 mt-2">Sua conta reúne dados, foto e acesso conforme o cargo autorizado no sistema.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-950 text-white pt-12 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="md:col-span-2">
+                    <h2 class="text-3xl font-black text-teal-300"><i class="fas fa-paw mr-2"></i>PetZilla</h2>
+                    <p class="text-slate-400 mt-3 max-w-xl">Um pet center digital feito para aproximar tutores dos produtos certos, com vitrine organizada, promoções claras e atendimento mais prático.</p>
+                    <div class="flex flex-wrap gap-3 mt-5">
+                        <span class="bg-white/10 px-4 py-2 rounded-full font-bold text-sm"><i class="fas fa-truck-fast mr-2 text-orange-300"></i>Entrega rápida</span>
+                        <span class="bg-white/10 px-4 py-2 rounded-full font-bold text-sm"><i class="fas fa-shield-dog mr-2 text-teal-300"></i>Tudo para pets</span>
+                        <span class="bg-white/10 px-4 py-2 rounded-full font-bold text-sm"><i class="fas fa-percent mr-2 text-blue-300"></i>Promoções por evento</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-black text-lg mb-4">Petshop</h3>
+                    <div class="grid gap-2 text-slate-400">
+                        <a href="index.html" class="hover:text-teal-300">Início</a>
+                        <a href="produtos.html" class="hover:text-teal-300">Produtos</a>
+                        <a href="login.html" class="hover:text-teal-300">Entrar</a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-black text-lg mb-4">Categorias populares</h3>
+                    <div class="grid gap-2 text-slate-400">
+                        <span><i class="fas fa-dog mr-2 text-orange-300"></i>Cães</span>
+                        <span><i class="fas fa-cat mr-2 text-teal-300"></i>Gatos</span>
+                        <span><i class="fas fa-fish mr-2 text-blue-300"></i>Peixes e aves</span>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-white/10 mt-8 pt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-sm text-slate-500">
+                <p>© PetZilla — cuidado, carinho e praticidade para o seu pet.</p>
+                <p>Pensado para deixar a experiência de compra mais simples, bonita e acolhedora.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/session.js"></script>
+    <script src="assets/js/cart.js"></script>
+    <script src="assets/js/promo-banner.js"></script>
+    <script src="assets/js/user.js"></script>
+    <script src="assets/js/support-widget.js"></script>
+</body>
+
+</html>

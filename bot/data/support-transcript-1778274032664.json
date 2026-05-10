@@ -1,0 +1,115 @@
+{
+  "ticketId": 8,
+  "cliente": {
+    "nome": "Administrador",
+    "assunto": "Entrega",
+    "email": "admin@petzilla.com"
+  },
+  "fechadoPor": {
+    "id": 1,
+    "nome": "Administrador",
+    "usuario": "admin",
+    "perfil": "ADMIN",
+    "cargo": "Administrador"
+  },
+  "mensagens": [
+    {
+      "id": 35,
+      "autorTipo": "CLIENTE",
+      "autorNome": "Administrador",
+      "mensagem": "dawda",
+      "criadoEm": [
+        2026,
+        5,
+        8,
+        18,
+        0,
+        11
+      ]
+    },
+    {
+      "id": 36,
+      "autorTipo": "ATENDENTE",
+      "autorNome": "Administrador",
+      "mensagem": "wadawda",
+      "criadoEm": [
+        2026,
+        5,
+        8,
+        18,
+        0,
+        28
+      ]
+    },
+    {
+      "id": 37,
+      "autorTipo": "ATENDENTE",
+      "autorNome": "Administrador",
+      "mensagem": "wdaw",
+      "criadoEm": [
+        2026,
+        5,
+        8,
+        18,
+        0,
+        29
+      ]
+    },
+    {
+      "id": 38,
+      "autorTipo": "ATENDENTE",
+      "autorNome": "Administrador",
+      "mensagem": "dawdaw",
+      "criadoEm": [
+        2026,
+        5,
+        8,
+        18,
+        0,
+        29
+      ]
+    },
+    {
+      "id": 39,
+      "autorTipo": "ATENDENTE",
+      "autorNome": "Administrador",
+      "mensagem": "da",
+      "criadoEm": [
+        2026,
+        5,
+        8,
+        18,
+        0,
+        29
+      ]
+    },
+    {
+      "id": 40,
+      "autorTipo": "ATENDENTE",
+      "autorNome": "Administrador",
+      "mensagem": "wd",
+      "criadoEm": [
+        2026,
+        5,
+        8,
+        18,
+        0,
+        29
+      ]
+    },
+    {
+      "id": 41,
+      "autorTipo": "ATENDENTE",
+      "autorNome": "Administrador",
+      "mensagem": "aw",
+      "criadoEm": [
+        2026,
+        5,
+        8,
+        18,
+        0,
+        29
+      ]
+    }
+  ]
+}

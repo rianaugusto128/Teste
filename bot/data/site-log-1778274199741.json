@@ -1,0 +1,14 @@
+{
+  "area": "SUPORTE",
+  "acao": "Novo ticket criado",
+  "alvo": "Ticket #9",
+  "actor": {
+    "nome": "Administrador",
+    "cargo": "Cliente",
+    "usuario": "admin@petzilla.com"
+  },
+  "detalhes": {
+    "email": "admin@petzilla.com",
+    "assunto": "Entrega"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "area": "USUÁRIO",
+  "acao": "atualizou",
+  "alvo": "http://localhost:8080/api/usuarios/2/admin",
+  "actor": {
+    "id": 1,
+    "nome": "Administrador",
+    "usuario": "admin",
+    "perfil": "ADMIN",
+    "cargo": "Administrador"
+  },
+  "detalhes": {
+    "origem": "frontend-admin",
+    "sucesso": true,
+    "statusHttp": 200
+  }
+}

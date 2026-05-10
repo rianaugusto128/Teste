@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suporte Admin - PetZilla</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/petzilla-support-pro.css">
+  <style>*{font-family:Inter,sans-serif} body{background:radial-gradient(circle at top left,rgba(45,212,191,.16),transparent 28rem),#f8fafc}</style>
+</head>
+<body class="text-slate-800 min-h-screen">
+  <header class="bg-slate-950 text-white sticky top-0 z-40 shadow-xl">
+    <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 to-orange-400 flex items-center justify-center shadow-lg"><i class="fas fa-headset text-2xl"></i></div>
+        <div><h1 class="text-2xl font-black leading-none">Suporte PetZilla</h1><p class="text-xs text-slate-400 font-semibold">Atendimento, conversas e transcripts</p></div>
+      </a>
+      <div class="flex flex-wrap gap-2 items-center">
+        <span class="bg-white/10 px-4 py-3 rounded-2xl font-bold"><i class="fas fa-user-shield mr-2"></i><span id="supportAgentName">Atendente</span></span>
+        <a href="admin.html" class="bg-white/10 hover:bg-white/20 px-4 py-3 rounded-2xl font-bold transition"><i class="fas fa-gauge mr-2"></i>Admin</a>
+        <a href="index.html" class="bg-teal-600 hover:bg-teal-700 px-4 py-3 rounded-2xl font-bold transition"><i class="fas fa-store mr-2"></i>Loja</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-8">
+    <div id="supportAdminStatus" class="hidden"></div>
+    <section class="grid md:grid-cols-3 gap-4 mb-8">
+      <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm"><p class="text-slate-500 font-bold">Abertos</p><h2 id="statAbertos" class="text-4xl font-black text-teal-700 mt-2">0</h2></div>
+      <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm"><p class="text-slate-500 font-bold">Finalizados</p><h2 id="statFechados" class="text-4xl font-black text-orange-500 mt-2">0</h2></div>
+      <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm"><p class="text-slate-500 font-bold">Total</p><h2 id="statTotal" class="text-4xl font-black text-blue-600 mt-2">0</h2></div>
+    </section>
+    <section class="grid lg:grid-cols-[390px_1fr] gap-6">
+      <aside class="bg-white border border-slate-100 rounded-[2rem] p-5 shadow-sm h-fit">
+        <div class="flex items-center justify-between gap-3 mb-4"><h2 class="text-xl font-black text-slate-900">Tickets</h2><button id="refreshTicketsBtn" class="bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-2xl font-black"><i class="fas fa-rotate-right"></i></button></div>
+        <select id="ticketFilter" class="pz-input mb-4"><option value="ABERTO">Abertos</option><option value="FECHADO">Fechados</option><option value="">Todos</option></select>
+        <div id="ticketsList" class="space-y-3 max-h-[65vh] overflow-auto pr-1"></div>
+      </aside>
+      <section class="bg-white border border-slate-100 rounded-[2rem] shadow-sm overflow-hidden h-[calc(100vh-9rem)] min-h-[620px] max-h-[820px]">
+        <div id="emptyTicket" class="h-full flex items-center justify-center p-10 text-center"><div><i class="fas fa-comments text-6xl text-teal-200 mb-4"></i><h2 class="text-2xl font-black text-slate-900">Selecione um ticket</h2><p class="text-slate-500 mt-2">As mensagens do cliente aparecem aqui em tempo real.</p></div></div>
+        <div id="ticketPanel" class="hidden h-full min-h-0 flex flex-col">
+          <div class="shrink-0 p-5 border-b bg-slate-50 flex flex-col md:flex-row md:items-center md:justify-between gap-4"><div><h2 id="ticketTitle" class="text-2xl font-black text-slate-900">Ticket</h2><p id="ticketMeta" class="text-slate-500 font-semibold mt-1">-</p></div><button id="closeTicketBtn" class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-2xl font-black"><i class="fas fa-check mr-2"></i>Finalizar</button></div>
+          <div id="messagesBox" class="flex-1 min-h-0 bg-slate-50 p-5 space-y-3 overflow-y-auto"></div>
+          <div id="adminTypingIndicator" class="hidden shrink-0 px-5 py-2 bg-slate-50 text-sm font-bold text-slate-500 border-t border-slate-100"></div>
+          <div class="shrink-0 p-5 border-t bg-white"><div class="flex gap-3"><textarea id="supportReplyInput" class="pz-input flex-1 min-h-16 max-h-32 resize-none overflow-auto" placeholder="Responder ao cliente..."></textarea><button id="sendReplyBtn" class="pz-btn-primary px-6"><i class="fas fa-paper-plane"></i></button></div></div>
+        </div>
+      </section>
+    </section>
+  </main>
+  <script src="assets/js/session.js"></script>
+  <script src="assets/js/support-admin.js"></script>
+</body>
+</html>

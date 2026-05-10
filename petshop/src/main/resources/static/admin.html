@@ -1,0 +1,698 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - PetZilla</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #f8fafc; }
+        .tab-active { background: #0f766e; color: #fff; }
+        .modal { transition: opacity .2s ease; }
+        .loading { display:inline-block; width:22px; height:22px; border:3px solid #e2e8f0; border-top-color:#f97316; border-radius:50%; animation:spin .8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+    <link rel="stylesheet" href="assets/css/petzilla-support-pro.css">
+</head>
+
+<body class="text-slate-800">
+    
+    <div id="promoBanner" class="hidden"></div>
+<header class="bg-slate-950 text-white sticky top-0 z-40 shadow-xl">
+        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 to-orange-400 flex items-center justify-center shadow-lg">
+                    <i class="fas fa-paw text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black leading-none">PetZilla Admin</h1>
+                    <p class="text-xs text-slate-400 font-semibold">Controle da loja, equipe, promoções e estoque</p>
+                </div>
+            </a>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="recarregarDadosAdmin()" class="bg-teal-600 hover:bg-teal-700 px-4 py-3 rounded-2xl font-bold transition">
+                    <i class="fas fa-rotate-right mr-2"></i>Atualizar dados
+                </button>
+                <a href="index.html" class="bg-white/10 hover:bg-white/20 px-4 py-3 rounded-2xl font-bold transition">
+                    <i class="fas fa-store mr-2"></i>Ver loja
+                </a>
+                <button onclick="logoutAdmin()" class="bg-orange-500 hover:bg-orange-600 px-4 py-3 rounded-2xl font-bold transition">
+                    <i class="fas fa-right-from-bracket mr-2"></i>Sair
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="status" class="hidden mb-6 p-4 rounded-2xl border font-semibold"></div>
+        <div id="apiStatus" class="hidden mb-6 p-4 rounded-2xl border font-semibold"></div>
+
+        <section class="grid md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                <p class="text-slate-500 font-bold">Produtos</p>
+                <h2 id="totalProdutos" class="text-4xl font-black text-teal-700 mt-2">0</h2>
+            </div>
+            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                <p class="text-slate-500 font-bold">Categorias de pets e produtos</p>
+                <h2 id="totalCategorias" class="text-4xl font-black text-orange-500 mt-2">0</h2>
+            </div>
+            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                <p class="text-slate-500 font-bold">Promoções ativas</p>
+                <h2 id="totalPromocoesAtivas" class="text-4xl font-black text-blue-600 mt-2">0</h2>
+            </div>
+            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                <p class="text-slate-500 font-bold">Baixo estoque</p>
+                <h2 id="totalBaixoEstoque" class="text-4xl font-black text-red-500 mt-2">0</h2>
+            </div>
+        </section>
+
+        <div class="bg-white rounded-3xl p-3 border border-slate-100 shadow-sm mb-8 flex flex-wrap gap-2">
+            <button id="tabProdutos" onclick="showAdminTab('produtos')" class="tab-active px-5 py-3 rounded-2xl font-black transition">
+                <i class="fas fa-box mr-2"></i>Produtos e estoque
+            </button>
+            <button id="tabCategorias" onclick="showAdminTab('categorias')" class="px-5 py-3 rounded-2xl font-black transition text-slate-600 hover:bg-slate-100">
+                <i class="fas fa-tags mr-2"></i>Categorias de pets e produtos
+            </button>
+            <button id="tabPromocoes" onclick="showAdminTab('promocoes')" class="px-5 py-3 rounded-2xl font-black transition text-slate-600 hover:bg-slate-100">
+                <i class="fas fa-bullhorn mr-2"></i>Promoções e eventos
+            </button>
+            <button id="tabVendas" onclick="showAdminTab('vendas')" class="px-5 py-3 rounded-2xl font-black transition text-slate-600 hover:bg-slate-100">
+                <i class="fas fa-chart-line mr-2"></i>Vendas e lucro
+            </button>
+            <button id="tabSuporte" onclick="showAdminTab('suporte')" class="px-5 py-3 rounded-2xl font-black transition text-slate-600 hover:bg-slate-100">
+                <i class="fas fa-headset mr-2"></i>Suporte
+            </button>
+            <button id="tabUsuarios" onclick="showAdminTab('usuarios')" class="px-5 py-3 rounded-2xl font-black transition text-slate-600 hover:bg-slate-100">
+                <i class="fas fa-users mr-2"></i>Usuários
+            </button>
+            <button id="tabCargos" onclick="showAdminTab('cargos')" class="px-5 py-3 rounded-2xl font-black transition text-slate-600 hover:bg-slate-100">
+                <i class="fas fa-id-card-clip mr-2"></i>Cargos e acessos
+            </button>
+        </div>
+
+        <section id="produtosSection">
+            <div id="estoqueOnlyNotice" class="hidden mb-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl p-4 font-semibold"><i class="fas fa-lock mr-2"></i>Seu cargo permite apenas visualizar produtos e atualizar estoque. Edição, criação e exclusão de produtos estão bloqueadas.</div>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                <div>
+                    <p class="font-black text-orange-500 uppercase text-sm tracking-widest">Gestão</p>
+                    <h2 class="text-3xl font-black text-slate-900">Produtos, preços e estoque</h2>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input id="adminSearchProdutos" type="text" placeholder="Buscar produto..." class="pl-11 pr-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-400">
+                    </div>
+                    <button id="novoProdutoButton" onclick="openProdutoModal()" class="bg-teal-600 hover:bg-teal-700 text-white px-5 py-3 rounded-2xl font-black transition">
+                        <i class="fas fa-plus-circle mr-2"></i>Novo produto
+                    </button>
+                </div>
+            </div>
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-100 text-slate-600 text-sm uppercase">
+                            <tr>
+                                <th class="p-4">Produto</th>
+                                <th class="p-4">Categoria</th>
+                                <th class="p-4">Preço</th>
+                                <th class="p-4">Estoque</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="produtosTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="categoriasSection" class="hidden">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                <div>
+                    <p class="font-black text-orange-500 uppercase text-sm tracking-widest">Gestão</p>
+                    <h2 class="text-3xl font-black text-slate-900">Categorias de pets e produtos</h2>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input id="adminSearchCategorias" type="text" placeholder="Buscar categoria..." class="pl-11 pr-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-orange-100 focus:border-orange-400">
+                    </div>
+                    <button onclick="openCategoriaModal()" class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-2xl font-black transition">
+                        <i class="fas fa-plus-circle mr-2"></i>Nova categoria
+                    </button>
+                </div>
+            </div>
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-100 text-slate-600 text-sm uppercase">
+                            <tr>
+                                <th class="p-4">Categoria</th>
+                                <th class="p-4">Descrição</th>
+                                <th class="p-4">Ícone</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categoriasTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="promocoesSection" class="hidden">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                <div>
+                    <p class="font-black text-orange-500 uppercase text-sm tracking-widest">Eventos</p>
+                    <h2 class="text-3xl font-black text-slate-900">Campanhas e ofertas com contagem regressiva</h2>
+                    <p class="text-slate-500 mt-1">Crie campanhas sazonais, escolha produtos participantes e mostre ofertas com urgência para o cliente.</p>
+                </div>
+                <button onclick="openPromocaoModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-2xl font-black transition w-fit">
+                    <i class="fas fa-bullhorn mr-2"></i>Nova promoção
+                </button>
+            </div>
+            <div class="bg-blue-600 text-white rounded-3xl p-5 mb-6 shadow-sm">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div>
+                        <p class="font-black uppercase tracking-widest text-blue-100 text-sm">Prévia do banner</p>
+                        <h3 class="text-2xl font-black">Até <span id="previewDesconto">0%</span> OFF no evento selecionado</h3>
+                        <p id="previewDescricaoBanner" class="text-blue-100 font-semibold mt-1">ofertas especiais nos produtos selecionados</p>
+                    </div>
+                    <div class="flex gap-3 text-center">
+                        <div><strong id="previewHoras" class="text-3xl font-black">00</strong><p class="text-xs font-bold">HORAS</p></div>
+                        <div><strong id="previewMin" class="text-3xl font-black">00</strong><p class="text-xs font-bold">MIN</p></div>
+                        <div><strong id="previewSeg" class="text-3xl font-black">00</strong><p class="text-xs font-bold">SEG</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-100 text-slate-600 text-sm uppercase">
+                            <tr>
+                                <th class="p-4">Evento</th>
+                                <th class="p-4">Desconto</th>
+                                <th class="p-4">Período</th>
+                                <th class="p-4">Produtos</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="promocoesTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <section id="vendasSection" class="hidden">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                <div>
+                    <p class="font-black text-orange-500 uppercase text-sm tracking-widest">Comercial</p>
+                    <h2 class="text-3xl font-black text-slate-900">Controle de vendas e lucro</h2>
+                    <p class="text-slate-500 mt-1">Acompanhe pedidos finalizados, confira endereco de entrega e atualize o andamento para a equipe.</p>
+                </div>
+                <button id="refreshVendasBtn" type="button" class="bg-teal-600 hover:bg-teal-700 text-white px-5 py-3 rounded-2xl font-black transition w-fit">
+                    <i class="fas fa-rotate-right mr-2"></i>Atualizar vendas
+                </button>
+            </div>
+
+            <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm">
+                    <p class="text-slate-500 font-bold">Total vendido</p>
+                    <h3 id="vendasTotalVendido" class="text-3xl font-black text-emerald-600 mt-2">R$ 0,00</h3>
+                </div>
+                <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm">
+                    <p class="text-slate-500 font-bold">Pedidos</p>
+                    <h3 id="vendasTotalPedidos" class="text-3xl font-black text-teal-700 mt-2">0</h3>
+                </div>
+                <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm">
+                    <p class="text-slate-500 font-bold">Ticket medio</p>
+                    <h3 id="vendasTicketMedio" class="text-3xl font-black text-orange-500 mt-2">R$ 0,00</h3>
+                </div>
+                <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm">
+                    <p class="text-slate-500 font-bold">Pendentes</p>
+                    <h3 id="vendasPendentes" class="text-3xl font-black text-red-500 mt-2">0</h3>
+                </div>
+            </div>
+
+            <div class="grid xl:grid-cols-[1fr_340px] gap-6">
+                <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                    <div class="p-4 border-b border-slate-100 flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
+                        <div class="relative w-full lg:max-w-sm">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input id="adminSearchVendas" type="text" placeholder="Buscar pedido, cliente ou endereco..." class="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-400">
+                        </div>
+                        <select id="salesStatusFilter" class="w-full lg:w-64 px-4 py-3 rounded-2xl border border-slate-200 bg-white outline-none focus:ring-4 focus:ring-orange-100 focus:border-orange-400">
+                            <option value="">Todos os status</option>
+                            <option value="RECEBIDO">Recebido</option>
+                            <option value="PREPARANDO">Preparando</option>
+                            <option value="SAIU_PARA_ENTREGA">Saiu para entrega</option>
+                            <option value="ENTREGUE">Entregue</option>
+                            <option value="CANCELADO">Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left align-top">
+                            <thead class="bg-slate-100 text-slate-600 text-sm uppercase">
+                                <tr>
+                                    <th class="p-4">Pedido</th>
+                                    <th class="p-4">Cliente e endereco</th>
+                                    <th class="p-4">Produtos</th>
+                                    <th class="p-4">Total</th>
+                                    <th class="p-4">Entrega</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vendasTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <aside class="bg-white rounded-3xl border border-slate-100 shadow-sm p-5 h-fit">
+                    <p class="font-black text-orange-500 uppercase text-sm tracking-widest">Mais vendidos</p>
+                    <div id="topProdutosVendas" class="mt-4 space-y-3"></div>
+                    <div class="mt-6 pt-5 border-t border-slate-100">
+                        <p class="font-black text-slate-900 mb-3">Status dos pedidos</p>
+                        <div id="statusResumoVendas" class="space-y-2"></div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section id="suporteSection" class="hidden">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                <div>
+                    <p class="font-black text-orange-500 uppercase text-sm tracking-widest">Atendimento</p>
+                    <h2 class="text-3xl font-black text-slate-900">Tickets de suporte</h2>
+                    <p class="text-slate-500 mt-1">Acompanhe abertos e fechados, responda clientes e mantenha o hist?rico direto no painel.</p>
+                </div>
+                <button id="refreshTicketsBtn" type="button" class="bg-teal-600 hover:bg-teal-700 text-white px-5 py-3 rounded-2xl font-black transition w-fit"><i class="fas fa-rotate-right mr-2"></i>Atualizar tickets</button>
+            </div>
+            <div id="supportAdminStatus" class="hidden"></div>
+            <section class="grid md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm"><p class="text-slate-500 font-bold">Abertos</p><h2 id="statAbertos" class="text-4xl font-black text-teal-700 mt-2">0</h2></div>
+                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm"><p class="text-slate-500 font-bold">Finalizados</p><h2 id="statFechados" class="text-4xl font-black text-orange-500 mt-2">0</h2></div>
+                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm"><p class="text-slate-500 font-bold">Total</p><h2 id="statTotal" class="text-4xl font-black text-blue-600 mt-2">0</h2></div>
+            </section>
+            <section class="grid lg:grid-cols-[390px_1fr] gap-6">
+                <aside class="bg-white border border-slate-100 rounded-[2rem] p-5 shadow-sm h-fit">
+                    <div class="flex items-center justify-between gap-3 mb-4"><h3 class="text-xl font-black text-slate-900">Controle de tickets</h3><span class="bg-teal-50 text-teal-700 px-3 py-2 rounded-full text-xs font-black">Log ao vivo</span></div>
+                    <select id="ticketFilter" class="pz-input mb-4"><option value="ABERTO">Abertos</option><option value="FECHADO">Fechados</option><option value="">Todos</option></select>
+                    <div id="ticketsList" class="space-y-3 max-h-[65vh] overflow-auto pr-1"></div>
+                </aside>
+                <section class="bg-white border border-slate-100 rounded-[2rem] shadow-sm overflow-hidden h-[calc(100vh-11rem)] min-h-[620px] max-h-[820px]">
+                    <div id="emptyTicket" class="h-full flex items-center justify-center p-10 text-center"><div><i class="fas fa-comments text-6xl text-teal-200 mb-4"></i><h3 class="text-2xl font-black text-slate-900">Selecione um ticket</h3><p class="text-slate-500 mt-2">As mensagens do cliente aparecem aqui em tempo real.</p></div></div>
+                    <div id="ticketPanel" class="hidden h-full min-h-0 flex flex-col">
+                        <div class="shrink-0 p-5 border-b bg-slate-50 flex flex-col md:flex-row md:items-center md:justify-between gap-4"><div><h3 id="ticketTitle" class="text-2xl font-black text-slate-900">Ticket</h3><p id="ticketMeta" class="text-slate-500 font-semibold mt-1">-</p></div><button id="closeTicketBtn" class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-2xl font-black"><i class="fas fa-check mr-2"></i>Finalizar</button></div>
+                        <div id="messagesBox" class="flex-1 min-h-0 bg-slate-50 p-5 space-y-3 overflow-y-auto"></div>
+                        <div id="adminTypingIndicator" class="hidden shrink-0 px-5 py-2 bg-slate-50 text-sm font-bold text-slate-500 border-t border-slate-100"></div>
+                        <div class="shrink-0 p-5 border-t bg-white"><div class="flex gap-3"><textarea id="supportReplyInput" class="pz-input flex-1 min-h-16 max-h-32 resize-none overflow-auto" placeholder="Responder ao cliente..."></textarea><button id="sendReplyBtn" class="pz-btn-primary px-6"><i class="fas fa-paper-plane"></i></button></div></div>
+                    </div>
+                </section>
+            </section>
+        </section>
+        <section id="usuariosSection" class="hidden">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                <div>
+                    <p class="font-black text-orange-500 uppercase text-sm tracking-widest">Equipe</p>
+                    <h2 class="text-3xl font-black text-slate-900">Equipe e usuários</h2>
+                    <p class="text-slate-500 mt-1">Organize sua equipe, defina cargos e controle quem pode acessar cada área do painel.</p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input id="adminSearchUsuarios" type="text" placeholder="Buscar usuário..." class="w-full sm:w-72 pl-11 pr-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-400">
+                    </div>
+                    <select id="adminFiltroCargoUsuarios" class="w-full sm:w-64 px-4 py-3 rounded-2xl border border-slate-200 bg-white outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400">
+                        <option value="">Todos os cargos</option>
+                    </select>
+                </div>
+            </div>
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-100 text-slate-600 text-sm uppercase">
+                            <tr>
+                                <th class="p-4">Usuário</th>
+                                <th class="p-4">Contato</th>
+                                <th class="p-4">Cargo</th>
+                                <th class="p-4">Perfil</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usuariosTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="cargosSection" class="hidden">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                <div>
+                    <p class="font-black text-orange-500 uppercase text-sm tracking-widest">Permissões</p>
+                    <h2 class="text-3xl font-black text-slate-900">Cargos e permissões da equipe</h2>
+                    <p class="text-slate-500 mt-1">Monte funções como gerente, marketing ou estoquista e libere apenas as ferramentas necessárias.</p>
+                </div>
+                <button onclick="openCargoModal()" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-2xl font-black transition w-fit">
+                    <i class="fas fa-plus-circle mr-2"></i>Novo cargo
+                </button>
+            </div>
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-100 text-slate-600 text-sm uppercase">
+                            <tr>
+                                <th class="p-4">Cargo</th>
+                                <th class="p-4">Descrição</th>
+                                <th class="p-4">Acessos</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cargosTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-10 bg-gradient-to-r from-teal-700 to-cyan-700 text-white rounded-[2rem] p-6 md:p-8 shadow-lg">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                <div>
+                    <p class="font-black text-orange-200 uppercase tracking-widest text-sm">Painel PetZilla</p>
+                    <h2 class="text-3xl font-black mt-2">Painel feito para a rotina do petshop</h2>
+                    <p class="text-teal-50 mt-2 max-w-2xl">Controle estoque, organize a vitrine, gerencie campanhas e mantenha sua equipe trabalhando com permissões corretas.</p>
+                </div>
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="bg-white/15 rounded-2xl p-4">
+                        <i class="fas fa-lock text-2xl mb-2"></i>
+                        <p class="text-xs font-black">Permissões</p>
+                    </div>
+                    <div class="bg-white/15 rounded-2xl p-4">
+                        <i class="fas fa-box text-2xl mb-2"></i>
+                        <p class="text-xs font-black">Estoque</p>
+                    </div>
+                    <div class="bg-white/15 rounded-2xl p-4">
+                        <i class="fas fa-bullhorn text-2xl mb-2"></i>
+                        <p class="text-xs font-black">Eventos</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="produtoModal" class="modal fixed inset-0 bg-slate-950/70 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl max-h-[92vh] overflow-y-auto">
+            <div class="sticky top-0 bg-teal-700 text-white px-6 py-5 rounded-t-[2rem] flex items-center justify-between">
+                <h3 class="text-2xl font-black"><i class="fas fa-box mr-2"></i><span id="produtoModalTitle">Novo produto</span></h3>
+                <button onclick="closeProdutoModal()" class="text-3xl leading-none hover:text-orange-200">&times;</button>
+            </div>
+            <form id="produtoForm" class="p-6 space-y-5">
+                <input type="hidden" id="produtoId">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-black text-slate-700 mb-2">Nome do produto *</label>
+                        <input id="produtoNome" required type="text" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-400">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-black text-slate-700 mb-2">Descrição</label>
+                        <textarea id="produtoDescricao" rows="3" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-400"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Preço *</label>
+                        <input id="produtoPreco" required type="number" min="0" step="0.01" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-400">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Preço com desconto fixo</label>
+                        <input id="produtoPrecoDesconto" type="number" min="0" step="0.01" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-400">
+                        <p class="text-xs text-slate-500 mt-1">Opcional. Promoções por porcentagem ficam na aba Eventos.</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Quantidade em estoque</label>
+                        <input id="produtoQtdEstoque" type="number" min="0" step="1" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-400">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Categoria</label>
+                        <select id="produtoCategoriaId" class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-white outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-400"></select>
+                    </div>
+                                        <div class="md:col-span-2">
+                        <label class="block text-sm font-black text-slate-700 mb-2">Imagem do produto</label>
+                        <div class="grid md:grid-cols-[1fr_150px] gap-4 items-start">
+                            <div class="space-y-3">
+                                <input id="produtoImagem" type="text" placeholder="URL ou imagem carregada pelo arquivo" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-400">
+                                <label class="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border-2 border-dashed border-teal-200 bg-teal-50 text-teal-800 font-black cursor-pointer hover:bg-teal-100 transition">
+                                    <i class="fas fa-image"></i>
+                                    Escolher arquivo de imagem
+                                    <input id="produtoImagemArquivo" type="file" accept="image/*" class="hidden">
+                                </label>
+                                <p class="text-xs text-slate-500 font-semibold">O arquivo escolhido fica salvo no banco junto do produto.</p>
+                            </div>
+                            <div id="produtoImagemPreview" class="min-h-32 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 overflow-hidden">
+                                <i class="fas fa-bone text-4xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <label class="flex items-center gap-3 font-bold text-slate-700">
+                    <input id="produtoAtivo" type="checkbox" checked class="w-5 h-5 accent-teal-600"> Produto ativo
+                </label>
+                <label class="flex items-center gap-3 font-bold text-slate-700 bg-orange-50 border border-orange-100 rounded-2xl p-4">
+                    <input id="produtoDestaque" type="checkbox" class="w-5 h-5 accent-orange-500"> Mostrar na home como destaque
+                </label>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button type="submit" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-4 rounded-2xl font-black transition">Salvar produto</button>
+                    <button type="button" onclick="closeProdutoModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-4 rounded-2xl font-black transition">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="categoriaModal" class="modal fixed inset-0 bg-slate-950/70 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto">
+            <div class="sticky top-0 bg-orange-500 text-white px-6 py-5 rounded-t-[2rem] flex items-center justify-between">
+                <h3 class="text-2xl font-black"><i class="fas fa-tags mr-2"></i><span id="categoriaModalTitle">Nova categoria</span></h3>
+                <button onclick="closeCategoriaModal()" class="text-3xl leading-none hover:text-orange-100">&times;</button>
+            </div>
+            <form id="categoriaForm" class="p-6 space-y-5">
+                <input type="hidden" id="categoriaId">
+                <div>
+                    <label class="block text-sm font-black text-slate-700 mb-2">Nome da categoria *</label>
+                    <input id="categoriaNome" required type="text" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-orange-100 focus:border-orange-400">
+                </div>
+                <div>
+                    <label class="block text-sm font-black text-slate-700 mb-2">Descrição</label>
+                    <textarea id="categoriaDescricao" rows="3" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-orange-100 focus:border-orange-400"></textarea>
+                </div>
+                <div>
+                    <label for="categoriaIcon" class="block text-sm font-black text-slate-700 mb-2">Ícone da categoria</label>
+                    <select id="categoriaIcon" class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-white outline-none focus:ring-4 focus:ring-orange-100 focus:border-orange-400"></select>
+                    <div class="mt-3 flex items-center gap-3 bg-orange-50 border border-orange-100 rounded-2xl p-4">
+                        <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center">
+                            <span id="categoriaIconPreview" class="text-3xl text-orange-500"></span>
+                        </div>
+                        <span id="categoriaIconNome" class="font-bold text-slate-600">fa-paw</span>
+                    </div>
+                </div>
+                <label class="flex items-center gap-3 font-bold text-slate-700">
+                    <input id="categoriaAtiva" type="checkbox" checked class="w-5 h-5 accent-orange-500"> Categoria ativa
+                </label>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button type="submit" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-2xl font-black transition">Salvar categoria</button>
+                    <button type="button" onclick="closeCategoriaModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-4 rounded-2xl font-black transition">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="promocaoModal" class="modal fixed inset-0 bg-slate-950/70 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-4xl max-h-[92vh] overflow-y-auto">
+            <div class="sticky top-0 bg-blue-600 text-white px-6 py-5 rounded-t-[2rem] flex items-center justify-between">
+                <h3 class="text-2xl font-black"><i class="fas fa-bullhorn mr-2"></i><span id="promocaoModalTitle">Nova promoção</span></h3>
+                <button onclick="closePromocaoModal()" class="text-3xl leading-none hover:text-blue-100">&times;</button>
+            </div>
+            <form id="promocaoForm" class="p-6 space-y-5">
+                <input type="hidden" id="promocaoId">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Evento *</label>
+                        <select id="promocaoEventoSelect" class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-white outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400">
+                            <option value="Dia das Mães">Dia das Mães</option>
+                            <option value="Dia dos Pais">Dia dos Pais</option>
+                            <option value="Aniversário da empresa">Aniversário da empresa</option>
+                            <option value="Black Friday Pet">Black Friday Pet</option>
+                            <option value="Semana do Cliente">Semana do Cliente</option>
+                            <option value="Natal Pet">Natal Pet</option>
+                            <option value="OUTRO">Outro evento</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Nome personalizado</label>
+                        <input id="promocaoNomePersonalizado" type="text" placeholder="Use se escolher Outro" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Desconto máximo do banner *</label>
+                        <input id="promocaoPercentual" required type="number" min="1" max="40" step="1" placeholder="Ex: 20" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400">
+                        <p id="promocaoExemploCalculo" class="text-xs text-slate-500 mt-1">O sistema sorteia por produto entre 5% e o máximo informado. Limite: 40%.</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Descrição</label>
+                        <input id="promocaoDescricao" type="text" placeholder="Mensagem curta da promoção" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Início *</label>
+                        <input id="promocaoDataInicio" required type="datetime-local" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Fim *</label>
+                        <input id="promocaoDataFim" required type="datetime-local" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400">
+                    </div>
+                </div>
+                <label class="flex items-center gap-3 font-bold text-slate-700">
+                    <input id="promocaoAtiva" type="checkbox" checked class="w-5 h-5 accent-blue-600"> Promoção ativa
+                </label>
+                <div class="bg-slate-50 border border-slate-200 rounded-3xl p-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                        <div>
+                            <h4 class="font-black text-slate-900">Produtos participantes</h4>
+                            <p class="text-sm text-slate-500">Marque os produtos que receberão descontos aleatórios até o percentual do banner.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="marcarTodosProdutosPromo(true)" class="bg-white border border-slate-200 px-3 py-2 rounded-xl font-bold text-sm">Marcar todos</button>
+                            <button type="button" onclick="marcarTodosProdutosPromo(false)" class="bg-white border border-slate-200 px-3 py-2 rounded-xl font-bold text-sm">Limpar</button>
+                        </div>
+                    </div>
+                    <input id="promocaoBuscaProdutos" type="text" placeholder="Buscar produto para promoção..." class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400 mb-4">
+                    <div id="promocaoProdutosLista" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-72 overflow-y-auto pr-1"></div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black transition">Salvar promoção</button>
+                    <button type="button" onclick="closePromocaoModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-4 rounded-2xl font-black transition">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <div id="usuarioModal" class="modal fixed inset-0 bg-slate-950/70 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl max-h-[92vh] overflow-y-auto">
+            <div class="sticky top-0 bg-teal-700 text-white px-6 py-5 rounded-t-[2rem] flex items-center justify-between">
+                <h3 class="text-2xl font-black"><i class="fas fa-user-gear mr-2"></i>Editar usuário</h3>
+                <button onclick="closeUsuarioModal()" class="text-3xl leading-none hover:text-orange-200">&times;</button>
+            </div>
+            <form id="usuarioForm" class="p-6 space-y-5">
+                <input type="hidden" id="usuarioAdminId">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Nome *</label>
+                        <input id="usuarioAdminNome" required type="text" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-400">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">E-mail *</label>
+                        <input id="usuarioAdminEmail" required type="email" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-400">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Perfil base</label>
+                        <select id="usuarioAdminPerfil" class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-white outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-400">
+                            <option value="USUARIO">Usuário</option>
+                            <option value="ADMIN">Admin</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Cargo empresarial</label>
+                        <select id="usuarioAdminCargo" class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-white outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-400"></select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-black text-slate-700 mb-2">Nova senha</label>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <input id="usuarioAdminSenha" type="password" minlength="6" placeholder="Preencha apenas se quiser trocar a senha" class="flex-1 px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-orange-100 focus:border-orange-400">
+                            <button type="button" onclick="alterarSenhaUsuarioAdmin()" class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-2xl font-black transition">Alterar senha</button>
+                        </div>
+                    </div>
+                </div>
+                <label class="flex items-center gap-3 font-bold text-slate-700">
+                    <input id="usuarioAdminAtivo" type="checkbox" checked class="w-5 h-5 accent-teal-600"> Usuário ativo
+                </label>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button type="submit" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-4 rounded-2xl font-black transition">Salvar usuário</button>
+                    <button type="button" onclick="closeUsuarioModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-4 rounded-2xl font-black transition">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="cargoModal" class="modal fixed inset-0 bg-slate-950/70 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl max-h-[92vh] overflow-y-auto">
+            <div class="sticky top-0 bg-purple-600 text-white px-6 py-5 rounded-t-[2rem] flex items-center justify-between">
+                <h3 class="text-2xl font-black"><i class="fas fa-id-card-clip mr-2"></i><span id="cargoModalTitle">Novo cargo</span></h3>
+                <button onclick="closeCargoModal()" class="text-3xl leading-none hover:text-purple-100">&times;</button>
+            </div>
+            <form id="cargoForm" class="p-6 space-y-5">
+                <input type="hidden" id="cargoId">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Nome do cargo *</label>
+                        <input id="cargoNome" required type="text" placeholder="Ex: Gerente, Estoquista, Marketing" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">Status</label>
+                        <label class="flex items-center gap-3 h-[50px] font-bold text-slate-700">
+                            <input id="cargoAtivo" type="checkbox" checked class="w-5 h-5 accent-purple-600"> Cargo ativo
+                        </label>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-black text-slate-700 mb-2">Descrição</label>
+                        <textarea id="cargoDescricao" rows="3" class="w-full px-4 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400"></textarea>
+                    </div>
+                </div>
+                <div class="bg-slate-50 border border-slate-200 rounded-3xl p-5">
+                    <h4 class="font-black text-slate-900 mb-4">Acessos dentro da administração</h4>
+                    <div class="grid md:grid-cols-2 gap-3">
+                        <label class="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl p-4 font-bold"><input id="cargoAcessoProdutos" type="checkbox" class="w-5 h-5 accent-purple-600"> Produtos</label>
+                        <label class="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl p-4 font-bold"><input id="cargoAcessoEstoque" type="checkbox" class="w-5 h-5 accent-purple-600"> Controle de estoque</label>
+                        <label class="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl p-4 font-bold"><input id="cargoAcessoCategorias" type="checkbox" class="w-5 h-5 accent-purple-600"> Categorias de pets e produtos</label>
+                        <label class="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl p-4 font-bold"><input id="cargoAcessoPromocoes" type="checkbox" class="w-5 h-5 accent-purple-600"> Promoções e eventos</label>
+                        <label class="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl p-4 font-bold"><input id="cargoAcessoUsuarios" type="checkbox" class="w-5 h-5 accent-purple-600"> Equipe e usuários</label>
+                        <label class="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl p-4 font-bold"><input id="cargoAcessoCargos" type="checkbox" class="w-5 h-5 accent-purple-600"> Gerenciar cargos</label>
+                        <label class="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl p-4 font-bold"><input id="cargoAcessoSuporte" type="checkbox" class="w-5 h-5 accent-purple-600"> Atendimento de suporte</label>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button type="submit" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-2xl font-black transition">Salvar cargo</button>
+                    <button type="button" onclick="closeCargoModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-4 rounded-2xl font-black transition">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <footer class="bg-slate-950 text-white py-8 mt-10">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-black text-teal-300"><i class="fas fa-paw mr-2"></i>PetZilla Admin</h2>
+                <p class="text-slate-400 mt-1">Gestão prática para produtos, estoque, campanhas, equipe e permissões.</p>
+            </div>
+            <div class="flex flex-wrap gap-3 text-sm font-bold text-slate-300">
+                <span class="bg-white/10 px-4 py-2 rounded-full"><i class="fas fa-lock mr-2 text-orange-300"></i>Acesso por cargo</span>
+                <span class="bg-white/10 px-4 py-2 rounded-full"><i class="fas fa-boxes-stacked mr-2 text-teal-300"></i>Estoque</span>
+                <span class="bg-white/10 px-4 py-2 rounded-full"><i class="fas fa-bullhorn mr-2 text-blue-300"></i>Eventos</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/session.js"></script>
+    <script src="assets/js/promo-banner.js"></script>
+    <script src="assets/js/admin.js"></script>
+    <script src="assets/js/support-admin.js"></script>
+    <script src="assets/js/support-admin-entry.js"></script>
+    <script src="assets/js/site-action-logger.js"></script>
+</body>
+
+</html>
+
+
+

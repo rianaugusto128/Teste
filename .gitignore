@@ -1,0 +1,25 @@
+# Variáveis de ambiente
+.env
+.env.local
+.env.production
+
+# Node.js
+node_modules/
+npm-debug.log
+
+# Java/Maven
+target/
+*.jar
+*.war
+
+# Build frontend
+dist/
+build/
+
+# IDEs
+.vscode/
+.idea/
+
+# Sistema
+.DS_Store
+Thumbs.db

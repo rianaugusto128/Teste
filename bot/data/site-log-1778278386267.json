@@ -1,0 +1,36 @@
+{
+  "area": "CATEGORIA",
+  "acao": "criou",
+  "alvo": "http://localhost:8080/api/categorias",
+  "actor": {
+    "id": 1,
+    "nome": "Administrador",
+    "usuario": "admin",
+    "perfil": "ADMIN",
+    "cargo": "Administrador"
+  },
+  "detalhes": {
+    "metodo": "POST",
+    "url": "http://localhost:8080/api/categorias",
+    "id": 1,
+    "horario": "2026-05-08T22:13:06.260Z",
+    "enviado": {
+      "nome": "Primatas",
+      "descricao": "",
+      "icon": "mdi:paw",
+      "ativo": true
+    },
+    "antes": null,
+    "resposta": {
+      "id": 1,
+      "nome": "Primatas",
+      "descricao": "",
+      "ativo": true,
+      "icon": "mdi:paw"
+    },
+    "mudancas": [],
+    "origem": "frontend-admin",
+    "sucesso": true,
+    "statusHttp": 200
+  }
+}
